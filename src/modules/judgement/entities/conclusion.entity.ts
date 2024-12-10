@@ -49,6 +49,9 @@ export class Conclusion {
   @Column()
   actionResult: string;
 
+  @Column()
+  createdBy: string;
+
   @OneToMany(() => Approval, (approval) => approval.conclusion)
   approvals: Approval[];
 

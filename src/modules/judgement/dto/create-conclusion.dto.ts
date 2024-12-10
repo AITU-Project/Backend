@@ -1,4 +1,5 @@
-import { IsString, IsBoolean, IsDateString } from 'class-validator';
+import { IsString, IsBoolean, IsDateString, IsUUID } from 'class-validator';
+import { User } from 'src/modules/users/entities/user.entity';
 
 export class CreateConclusionDto {
   @IsDateString()
@@ -39,4 +40,7 @@ export class CreateConclusionDto {
 
   @IsString()
   actionResult: string;
+
+  @IsUUID()
+  createdBy: string;
 }
