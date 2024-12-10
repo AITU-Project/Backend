@@ -13,6 +13,7 @@ import { SignUpDto } from '../dto/sign-up.dto';
 import { VerifyDto } from '../dto/verify.dto';
 import { AuthGuard } from '../guards/auth.guard';
 import { AuthService } from '../service/auth.service';
+import { Roles } from '../../roles/decorator/roles.decorator';
 
 @ApiTags('Auth Controller')
 @Controller('auth')
@@ -33,7 +34,7 @@ export class AuthController {
   verify(@Body() dto: VerifyDto) {
     return this.auth.verify(dto);
   }
-
+  @Roles('moderator')
   @Get('profile')
   @UseGuards(AuthGuard)
   getProfile(@Request() request: any) {
