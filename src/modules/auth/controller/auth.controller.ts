@@ -14,6 +14,7 @@ import { VerifyDto } from '../dto/verify.dto';
 import { AuthGuard } from '../guards/auth.guard';
 import { AuthService } from '../service/auth.service';
 import { Roles } from '../../roles/decorator/roles.decorator';
+import { RolesGuard } from 'src/modules/roles/guards/roles.guard';
 
 @ApiTags('Auth Controller')
 @Controller('auth')
@@ -34,9 +35,9 @@ export class AuthController {
   verify(@Body() dto: VerifyDto) {
     return this.auth.verify(dto);
   }
-  @Roles('moderator')
+  @Roles('employee')
   @Get('profile')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard) 
   getProfile(@Request() request: any) {
     return this.auth.profile(request.user);
   }

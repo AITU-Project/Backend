@@ -5,13 +5,13 @@ import { User } from '../../users/entities/user.entity';
 
 @Injectable()
 export class RolesService {
-  constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-  ) {}
+    constructor(
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User>,
+    ) {}
 
-  async getRoleByEmail(email: string): Promise<string | null> {
-    const user = await this.userRepository.findOne({ where: { email } });
-    return user?.role || null;
-  }
+    async getRoleByEmail(email: string): Promise<string | null> {
+        const user = await this.userRepository.findOne({ where: { email } });
+        return user?.role || null;
+    }
 }
