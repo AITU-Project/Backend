@@ -7,7 +7,9 @@ import { OperationsDtos } from '../../../common/operations/decorators/operations
 import { OperationsEntity } from '../../../common/operations/decorators/operations.entity.decorator';
 import { OperationsService } from '../../../common/operations/service/operations.service';
 import { UserInterface } from '../../auth/service/auth.service';
+import { RoleEnum } from '../../users/enums/users.enums';
 import { EmployeeService } from '../../users/service/employee.service';
+import { UsersService } from '../../users/service/users.service';
 import { CreateConclusionDto } from '../dto/create-conclusion.dto';
 import { UpdateConclusionDto } from '../dto/update-conclusion.dto';
 import { Conclusion } from '../entities/conclusion.entity';
@@ -21,6 +23,9 @@ export class ConclusionService extends OperationsService<
 > {
   @Inject(EmployeeService)
   private readonly employeeService: EmployeeService;
+
+  @Inject(UsersService)
+  private readonly usersService: UsersService;
 
   sortableColumns = [
     'actionResult',
@@ -40,11 +45,17 @@ export class ConclusionService extends OperationsService<
     query: PaginateQuery,
     user: UserInterface,
   ): Promise<Paginated<Conclusion>> {
-    const employee = await this.employeeService.getEmployeeFromUserId(user.sub);
-    return this.pagination.paginate(query, this.repository, {
-      sortableColumns: this.sortableColumns,
-      where: { createdBy: { id: employee.id } },
-      relations: ['called', 'incident', 'approvals', 'defender'],
-    });
+    const usr = await this.usersService.findOne(user.sub);
+
+    if (usr.role === RoleEnum.Employee) {
+      const employee = await this.employeeService.getEmployeeFromUserId(
+        user.sub,
+      );
+      return this.pagination.paginate(query, this.repository, {
+        sortableColumns: this.sortableColumns,
+        where: { createdBy: { id: employee.id } },
+        relations: ['called', 'incident', 'approvals', 'defender'],
+      });
+    }
   }
 }
